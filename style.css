@@ -1,0 +1,329 @@
+/*
+
+### Expected behaviour
+
+- On first load, show the profile information for Octocat.
+- Display an error message (as shown in the design) if no user is found when a new search is made.
+- If a GitHub user hasn't added their name, show their username where the name would be without the `@` symbol and again below with the `@` symbol.
+- If a GitHub user's bio is empty, show the text "This profile has no bio" with transparency added (as shown in the design). The lorem ipsum text in the designs shows how the bio should look when it is present.
+- If any of the location, website, twitter, or company properties are empty, show the text "Not Available" with transparency added (as shown in the design).
+- Website, twitter, and company information should all be links to those resaources. For the company link, it should remove the `@` symbol and link to the company page on GitHub. For Octocat, with `@github` being returned for the company, this would lead to a URL of `https://github.com/github`.
+
+
+
+- Switch between light and dark themes
+- **Bonus**: Have the correct color scheme chosen for them based on their computer preferences. _Hint_: Research `prefers-color-scheme` in CSS.
+
+
+*/
+
+/* Box sizing rules */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Remove default margin */
+body,
+h1,
+h2,
+h3,
+h4,
+p,
+figure,
+blockquote,
+dl,
+dd {
+  margin: 0;
+}
+
+/* Remove list styles on ul, ol elements with a list role, which suggests default styling will be removed */
+ul[role='list'],
+ol[role='list'] {
+  list-style: none;
+}
+
+/* Set core root defaults */
+html:focus-within {
+  scroll-behavior: smooth;
+}
+
+/* Set core body defaults */
+body {
+  min-height: 100vh;
+  text-rendering: optimizeSpeed;
+  line-height: 1.5;
+}
+
+/* A elements that don't have a class get default styles */
+a:not([class]) {
+  text-decoration-skip-ink: auto;
+}
+
+/* Make images easier to work with */
+img,
+picture {
+  max-width: 100%;
+  display: block;
+}
+
+/* Inherit fonts for inputs and buttons */
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+/* Remove all animations, transitions and smooth scroll for people that prefer not to see them */
+@media (prefers-reduced-motion: reduce) {
+  html:focus-within {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+:root {
+  /* COLORS */
+  /* light mode */
+
+  --lm-light-100: hsl(0 0% 100%);
+  --lm-light-200: hsl(227 100% 98%);
+  --lm-blue-400: hsl(212 100% 50%);
+  --lm-blue-500: hsl(217 20% 51%);
+  --lm-blue-700: hsl(217 35% 45%);
+  --lm-blue-900: hsl(217 21% 21%);
+
+  /* dark mode */
+
+  --dm-light-100: hsl(0 0% 100%);
+  --dm-blue-400: hsl(212 100% 50%);
+  --dm-blue-700: hsl(222 41% 20%);
+  --dm-blue-900: hsl(220 40% 13%);
+
+  /* TYPOGRAPHY */
+
+  --ff-base: 'Space Mono', monospace;
+}
+
+html[data-theme='light'] {
+  --bg-body: var(--lm-light-200);
+  --bg-search: var(--lm-light-100);
+  --bg-main: var(--lm-light-100);
+  --bg-stats: var(--lm-light-200);
+
+  /* search */
+
+  --bg-search-btn: var(--lm-blue-400);
+  --color-search-btn: var(--lm-light-100);
+
+  /* main */
+  --color-main: var(--lm-blue-700);
+  --color-title: var(--lm-blue-900);
+  --color-handle: var(--lm-blue-400);
+  --color-date: var(--lm-blue-500);
+  --color-stats: var(--lm-blue-900);
+
+  .search,
+  .main {
+    box-shadow: 0px 16px 30px -10px rgba(70, 96, 187, 0.198567);
+  }
+}
+
+html[data-theme='dark'] {
+  --bg-body: var(--dm-blue-900);
+  --bg-search: var(--dm-blue-700);
+  --bg-main: var(--dm-blue-700);
+  --bg-stats: var(--dm-blue-900);
+
+  /* search */
+
+  --bg-search-btn: var(--dm-blue-400);
+  --color-search-btn: var(--dm-light-100);
+
+  /* main */
+  --color-main: var(--dm-light-100);
+  --color-title: var(--dm-light-100);
+  --color-handle: var(--dm-blue-400);
+  --color-date: var(--dm-light-100);
+  --color-stats: var(--dm-light-100);
+}
+
+body {
+  display: grid;
+  font-family: var(--ff-base);
+  background-color: var(--bg-body);
+  font-size: clamp(0.8125rem, 0.6932rem + 0.5089vw, 0.9375rem);
+}
+
+.holder {
+  max-width: 57.875rem;
+  margin: auto;
+  padding-inline: clamp(1.5rem, -2.9132rem + 18.8295vw, 6.125rem);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  margin-block: 2rem 2.25rem;
+}
+
+.logo {
+  font-weight: 700;
+  font-size: 26px;
+}
+
+.theme-switch-btn {
+  margin: 0;
+  border: 0;
+  padding: 0;
+  background-color: transparent;
+  max-height: 38px;
+  overflow: hidden;
+}
+
+.theme-switch-holder {
+  transform: none;
+  transition: 250ms ease-in-out;
+}
+
+[aria-pressed='true'] .theme-switch-holder {
+  transform: translateY(-50%);
+}
+
+.theme-switch-option {
+  display: flex;
+  justify-content: end;
+  gap: 1rem;
+  font-weight: 700;
+  font-size: 13px;
+  line-height: 1.5;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  padding-block: 9px;
+}
+
+.search {
+  background-color: var(--bg-search);
+  border-radius: 1rem;
+}
+
+.search-label {
+  display: flex;
+}
+
+.search-field {
+}
+
+.search-btn {
+  font-weight: 700;
+  background-color: var(--bg-search-btn);
+  color: var(--color-search-btn);
+}
+
+.main {
+  display: grid;
+  grid-template-columns: 70px 1fr;
+  column-gap: 1.25rem;
+  background-color: var(--bg-main);
+  color: var(--color-main);
+  margin-block: 1.5rem;
+  border-radius: 1rem;
+  padding: 1.5rem;
+}
+
+.avatar {
+}
+
+.info {
+}
+
+.title {
+  font-weight: 700;
+  font-size: clamp(1rem, 0.4036rem + 2.5445vw, 1.625rem);
+  color: var(--color-title);
+}
+
+.handle {
+  color: var(--color-handle);
+}
+
+.date {
+  color: var(--color-date);
+}
+
+.description {
+  margin-top: 2rem;
+}
+
+.stats {
+  background-color: var(--bg-stats);
+  margin-block: 1.5rem;
+  border-radius: 0.625rem;
+  padding: 1rem 1.5rem;
+  text-align: center;
+}
+
+.stats dl {
+  display: flex;
+  justify-content: space-between;
+}
+
+.stats dd {
+  font-weight: 700;
+  font-size: clamp(1rem, 0.6422rem + 1.5267vw, 1.375rem);
+  color: var(--color-stats);
+}
+
+.links {
+}
+
+.links ul {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  gap: 1rem;
+  margin: 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+.links li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+body,
+.search,
+.main,
+.stats {
+  transition: background-color 350ms linear;
+}
+
+@media (max-width: 768px) {
+  .description,
+  .stats,
+  .links {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (min-width: 769px) {
+  .avatar {
+    grid-row: 1 / 3;
+  }
+
+  .stats,
+  .links {
+    grid-column: 2 / -1;
+  }
+}

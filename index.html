@@ -1,28 +1,153 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon-32x32.png">
-  
+
   <title>Frontend Mentor | GitHub user search app</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="./style.css">
+
+  <script>
+
+
+    function getTheme() {
+      const ls = localStorage.getItem('theme');
+
+      if (ls) {
+        updateUI(ls);
+      } else {
+        const themeDark = window.matchMedia('(prefers-color-scheme: dark)');
+
+        if (themeDark.matches) {
+          colorMode = 'dark';
+        } else {
+          colorMode = 'light';
+        }
+
+        setLS(colorMode);
+        updateUI(colorMode);
+      }
+    }
+
+    function switchTheme() {
+      let colorMode = document.documentElement.getAttribute('data-theme');
+
+      if (colorMode === 'dark') {
+        colorMode = 'light';
+      } else {
+        colorMode = 'dark';
+      }
+
+
+
+      setLS(colorMode);
+      updateUI(colorMode);
+    }
+
+    function setLS(color) {
+      localStorage.setItem('theme', color);
+    }
+
+    function updateUI(color) {
+      document.documentElement.setAttribute('data-theme', color);
+
+      if (color === 'light') {
+        toggle.setAttribute('aria-pressed', false)
+      } else {
+        toggle.setAttribute('aria-pressed', true)
+      }
+    }
+
+  </script>
+
 </head>
+
 <body>
 
-  devfinder
+  <div class="holder">
 
-  Light
-  Dark
 
-  Search GitHub username...
-  Search
+    <header class="header">
+      <div class="logo">devfinder</div>
 
-  Joined
+      <button class="theme-switch-btn" id="switch-theme">
+        <div class="theme-switch-holder">
+          <div class="theme-switch-option" style="color: #000">Dark <img src="./assets/icon-moon.svg"></div>
+          <div class="theme-switch-option" style="color: #fff">Light <img src="./assets/icon-sun.svg"></div>
+        </div>
+      </button>
+    </header>
 
-  Repos
-  Followers
-  Following
+    <form class="search">
+      <label class="search-label" for="search-field">
+        <img src="./assets/icon-search.svg">
+        <span>Search GitHub username…</span>
+      </label>
+      <input class="search-field" id="search-field" type="text" value="Octocat">
+      <button class="search-btn" type="button" id="fetchUserData">Search</button>
+    </form>
+
+    <main class="main">
+
+      <div class="avatar">
+        <img src="./assets/favicon-32x32.png" alt="The Octocat avatar" width="70" height="70">
+      </div>
+
+      <div class="info">
+        <div class="info-block">
+          <h1 class="title"><span id="_username">The Octocat</span></h1>
+          <p class="handle"><span id="_handle">@octocat</span></p>
+        </div>
+        <div class="info-block">
+          <p class="date">Joined <span id="_created">25 Jan 2011</span></p>
+        </div>
+      </div>
+
+      <div class="description">
+        <p id="_bio">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros.
+        </p>
+      </div>
+
+
+      <div class="stats">
+        <dl>
+          <div>
+            <dt>Repos</dt>
+            <dd><span id="_public_repos">8</span></dd>
+          </div>
+          <div>
+            <dt>Followers</dt>
+            <dd><span id="_followers">3938</span></dd>
+          </div>
+          <div>
+            <dt>Following</dt>
+            <dd><span id="_following">9</span></dd>
+          </div>
+        </dl>
+      </div>
+
+      <div class="links">
+        <ul>
+          <li><img src="./assets/icon-location.svg"> <span id="_location">San Francisco</span></li>
+          <li><img src="./assets/icon-website.svg"> <span id="_website">https://github.blog</span></li>
+          <li><img src="./assets/icon-twitter.svg"> <span id="_twitter">Not Available</span></li>
+          <li><img src="./assets/icon-company.svg"> <span id="_company">@github</span></li>
+        </ul>
+      </div>
+    </main>
+
+  </div>
+
+  <script src="./script.js"></script>
 
 </body>
+
 </html>
